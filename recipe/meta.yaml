@@ -34,12 +34,12 @@ test:
     - pytest_regressions
   commands:
     - pip check
-    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     - pytest -v tests
   requires:
     - pip
     - matplotlib-base
-    - {{ pin_compatible('numpy') }}
+    - numpy <3
     - pandas
     - pillow
 
