@@ -10,36 +10,38 @@ source:
   sha256: 4c30064e0923929012c94f5d6f35205be06fd8709c7f0dba0228e05c460af05e
 
 build:
-  noarch: python
   number: 0
-  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: True  # [py<39]
 
 requirements:
   host:
     - pip
-    - python {{ python_min }}
+    - python 
+    - wheel
     - setuptools
     - setuptools_scm
-
   run:
+    - python
     - pytest >=6.2.0
     - pytest-datadir >=1.2.0
-    - python >={{ python_min }}
     - pyyaml
 
 test:
-  requires:
-    - matplotlib-base
-    - {{ pin_compatible('numpy') }}
-    - pandas
-    - pillow
-    - python {{ python_min }}
   source_files:
     - tests
   imports:
     - pytest_regressions
   commands:
-    - pytest tests
+    - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - pytest -v tests
+  requires:
+    - pip
+    - matplotlib-base
+    - numpy <3
+    - pandas
+    - pillow
 
 about:
   home: https://github.com/ESSS/pytest-regressions
@@ -48,6 +50,8 @@ about:
   license_file: LICENSE
   summary: Easy to use fixtures to write regression tests.
   description: Easy to use fixtures to write regression tests.
+  doc_url: https://pytest-regressions.readthedocs.io
+  dev_url: https://github.com/ESSS/pytest-regressions
 
 extra:
   recipe-maintainers:
